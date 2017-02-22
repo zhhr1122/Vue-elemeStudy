@@ -17,7 +17,7 @@
         <li v-for="item in goods" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li v-for="food in item.foods" class="food-item border-1px" @click="showDetail(food)">
+            <li v-for="food in item.foods" class="food-item border-1px" @click="showDetail(food,$event)">
               <div class="icon">
                 <img :src="food.icon" width="57" height="57">
               </div>
@@ -42,7 +42,7 @@
     </div>
 
     <shopcart v-ref:shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :select-foods="selectFoods"></shopcart>
-    <food :food="detailFood" :is-show="isShow"></food>
+    <food :food="detailFood" v-ref:food></food>
   </div>
 </template>
 
@@ -64,8 +64,7 @@
         goods: [],
         listHeight: [],
         scrollY: 0,
-        isShow: false,
-        detailFood: null
+        detailFood: {}
       };
     },
     computed: {
@@ -142,9 +141,12 @@
         let el = foodList[index];
         this.foodsScroll.scrollToElement(el, 300);
       },
-      showDetail(food) {
-        this.isShow = !this.isShow;
+      showDetail(food, event) {
+        if (!event._constructed) {
+          return;
+        }
         this.detailFood = food;
+        this.$refs.food.show();
       }
     },
     components: {
