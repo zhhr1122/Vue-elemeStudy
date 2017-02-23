@@ -47,7 +47,7 @@
 
   // const POSITIVE = 0;
   // const NEGATIVE = 1;
-  const ALL = 2;
+  // const ALL = 2;
 
   export default {
     props: {
@@ -58,7 +58,7 @@
     data() {
       return {
         showFlag: false,
-        selectType: ALL,
+        selectType: 2,
         onlyContent: true,
         desc: {
           all: '全部',
@@ -70,7 +70,7 @@
     methods: {
       show() {
         this.showFlag = true;
-        this.selectType = ALL;
+        this.selectType = 1;
         this.onlyContent = true;
         this.$nextTick(() => {
           if (!this.scroll) {

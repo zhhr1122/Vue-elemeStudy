@@ -2,8 +2,8 @@
   <div class="ratingselect">
     <div class="rating-type border-1px">
       <span class="block positive" :class="{'active':selectType===2}">{{desc.all}}<span class="count">47</span></span>
-      <span class="block positive">{{desc.positive}}<span class="count">40</span></span>
-      <span class="block negative">{{desc.negative}}<span class="count">7</span></span>
+      <span class="block positive" :class="{'active':selectType===0}">{{desc.positive}}<span class="count">40</span></span>
+      <span class="block negative" :class="{'active':selectType===1}">{{desc.negative}}<span class="count">7</span></span>
     </div>
     <div class="switch">
       <span class="icon-check_circle"></span>
