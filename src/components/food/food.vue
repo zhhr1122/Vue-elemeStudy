@@ -33,6 +33,22 @@
       <div class="rating">
         <h1 class="title">商品评价</h1>
         <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></ratingselect>
+        <div class="rating-wrapper">
+          <ul v-show="food.ratings && food.ratings.length">
+            <li v-for="rating in food.ratings" class="rating-item border-1px" v-show="needShow(rating)">
+              <div class="user">
+                <span class="name">{{rating.username}}</span>
+                <img class="avater" width="12" height="12" :src="rating.avatar">
+              </div>
+              <div class="time">{{rating.rateTime | formatDate}}</div>
+              <p class="text">
+                <span :class="{'icon-thumb_up' :rating.rateType ===0,'icon-thumb_down' :rating.rateType ===1}"></span>
+                {{rating.text}}
+              </p>
+            </li>
+          </ul>
+          <div class="no-rating" v-show="!food.ratings || !food.ratings.length">暂无评价</div>
+        </div>
       </div>
     </div>
   </div>
@@ -44,10 +60,12 @@
   import cartcontrol from 'components/cartcontrol/cartcontrol';
   import split from 'components/split/split';
   import ratingselect from 'components/ratingselect/ratingselect';
+  import {formatDate} from 'common/js/date';
+  // 带花括号的是从JS中导出的方法
 
-  // const POSITIVE = 0;
-  // const NEGATIVE = 1;
-  // const ALL = 2;
+   // const POSITIVE = 0;
+   // const NEGATIVE = 1;
+   const ALL = 2;
 
   export default {
     props: {
@@ -58,19 +76,20 @@
     data() {
       return {
         showFlag: false,
-        selectType: 2,
-        onlyContent: true,
+        selectType: ALL,
+        onlyContent: false,
         desc: {
           all: '全部',
           positive: '推荐',
           negative: '吐槽'
-        }
+        },
+        selectedRatings: []
       };
     },
     methods: {
       show() {
         this.showFlag = true;
-        this.selectType = 1;
+        this.selectType = ALL;
         this.onlyContent = true;
         this.$nextTick(() => {
           if (!this.scroll) {
@@ -91,17 +110,48 @@
         }
         this.$dispatch('cart.add', event.target);
         Vue.set(this.food, 'count', 1);
+      },
+      needShow(rating) {
+        if (this.onlyContent && !rating.text) {
+          return false;
+        }
+        if (this.selectType === ALL) {
+          return true;
+        } else {
+          return rating.rateType === this.selectType;
+        }
       }
     },
     components: {
       cartcontrol,
       split,
       ratingselect
+    },
+    filters: {
+      formatDate(time) {
+        let date = new Date(time);
+        return formatDate(date, 'yyyy-MM-dd hh:mm');
+      }
+    },
+    events: {
+      'ratingtype.select'(type) {
+        this.selectType = type;
+        this.$nextTick(() => {
+          this.scroll.refresh();
+        });
+      },
+      'content.toggle'(onlyContent) {
+        this.onlyContent = onlyContent;
+        this.$nextTick(() => {
+          this.scroll.refresh();
+        });
+      }
     }
   };
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+  @import "../../common/stylus/mixin.styl"
   .food
     position: fixed
     left: 0
@@ -206,4 +256,47 @@
         margin-left: 18px
         font-size: 14px
         color: rgb(7, 17, 27)
+      .rating-wrapper
+        padding: 0 18px
+        .rating-item
+          position: relative
+          padding: 16px 0
+          border-1px(rgba(7,17,27,0.1))
+          .user
+            position: absolute
+            top: 16px
+            right: 0
+            font-size: 0
+            line-height: 12px
+            .name
+              margin-right: 6px
+              display: inline-block
+              vertical-align: top
+              font-size: 10px
+              color: rgb(147, 153, 159)
+            .avater
+              vertical-align: top
+              display: inline-block
+              border-radius: 50%
+          .time
+            font-size: 10px
+            color: rgb(147,153,158)
+            line-height: 12px
+            margin-bottom: 6px
+          .text
+            font-size: 12px
+            line-height: 16px
+            color: rgb(7,17,17)
+            .icon-thumb_up
+              margin-right: 1px
+              line-height: 16px
+              color: rgb(0,160,220)
+            .icon-thumb_down
+              margin-right: 1px
+              line-height: 16px
+              color: rgb(147,153,159)
+        .no-rating
+          padding: 16px 0
+          font-size: 12px
+          color: rgb(147,153,158)
 </style>
