@@ -49,7 +49,7 @@
               </div>
             </li>
           </ul>
-          <div class="no-rating" v-show="!food.ratings || !food.ratings.length">暂无评价</div>
+          <div class="no-rating" v-show="!ratings || !ratings.length">暂无评价</div>
         </div>
       </div>
     </div>
@@ -159,6 +159,9 @@
         border-right: 1px solid rgba(7,17,27,0.1)
         text-align: center
         padding: 6px 0
+        @media only screen and (max-width:320px)
+          flex: 0 0 120px
+          width: 120px
         .score
           margin-bottom: 6px
           font-size: 24px
@@ -176,6 +179,8 @@
       .overview-right
         flex: 1
         padding: 6px 0 6px 24px
+        @media only screen and (max-width:320px)
+         padding-left: 6px
         .score-wrapper
           font-size: 0
           margin-bottom: 8px
@@ -270,7 +275,6 @@
               line-height: 16px
               color: rgb(147,153,159)
               border-radius: 2px
-
           .time
             position: absolute
             right: 0
@@ -278,4 +282,8 @@
             font-size: 10px
             color: rgb(147,153,159)
             line-height: 12px
+      .no-rating
+        padding: 16px 0
+        font-size: 12px
+        color: rgb(147,153,158)
 </style>
